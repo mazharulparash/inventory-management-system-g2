@@ -26,7 +26,7 @@
                             <p class="text-gray-600 mb-4">SKU: {{ $product->sku }}</p>
                             <p class="text-gray-600 mb-4">Category: {{ $product->category->name ?? 'N/A' }}</p>
                             <p class="text-gray-600 mb-4">Quantity Available: {{ $product->quantity }}</p>
-                            <form method="POST">
+                            <form action="{{ route('cart.add', $product->id) }}" method="POST">
                                 @csrf
                                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Add to Cart</button>
                             </form>

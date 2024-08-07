@@ -24,7 +24,7 @@
                                 <p class="text-gray-600 mb-4">${{ $product->price }}</p>
                                 <div class="flex justify-between items-center">
                                     <a href="{{ route('product.detail', $product->id) }}" class="text-blue-500 hover:underline">View Details</a>
-                                    <form method="POST">
+                                    <form action="{{ route('cart.add', $product->id) }}" method="POST">
                                         @csrf
                                         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Add to Cart</button>
                                     </form>
