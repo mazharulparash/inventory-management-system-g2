@@ -1,4 +1,3 @@
-<!-- resources/views/cart/index.blade.php -->
 <x-customer-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
@@ -47,6 +46,23 @@
                                 @endforeach
                             </tbody>
                         </table>
+
+                        <!-- Display Total Amount -->
+                        <div class="mt-4 flex justify-between items-center">
+                            <div class="text-lg font-semibold">
+                                {{ __('Total Amount: $') . number_format(array_sum(array_map(function ($item) {
+                                    return $item['price'] * $item['quantity'];
+                                }, $cart)), 2) }}
+                            </div>
+
+                            <!-- Clear Cart Button -->
+                            <form action="{{ route('cart.clear') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-800">
+                                    {{ __('Clear Cart') }}
+                                </button>
+                            </form>
+                        </div>
                     @else
                         <div class="text-center">
                             <p class="text-lg">{{ __('Your cart is empty!') }}</p>
@@ -57,27 +73,6 @@
             </div>
         </div>
     </div>
-
-    <!-- SweetAlert2 Toast -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            @if(session('success'))
-                Swal.fire({
-                    icon: 'success',
-                    title: "{{ session('success') }}",
-                    toast: true,
-                    position: 'bottom-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                })
-            @endif
-        });
-    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
