@@ -34,7 +34,6 @@
                                 <th>Name</th>
                                 <th>Image</th>
                                 <th>Price</th>
-                                <th>SKU</th>
                                 <th>Category</th>
                                 <th>Quantity</th>
                                 <th>Actions</th>
@@ -53,7 +52,6 @@
                                         @endif
                                     </td>
                                     <td>{{ $product->price }}</td>
-                                    <td>{{ $product->sku }}</td>
                                     <td>{{ $product->category->name }}</td>
                                     <td>{{ $product->quantity }}</td>
                                     <td>
