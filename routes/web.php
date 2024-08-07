@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\AdminProfileController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,6 +47,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('admin/products', ProductController::class);
     });
 
+    // Admin Middleware End
+
     // Routes for user profile management
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -54,6 +57,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Routes for customer products
     Route::get('/products', [ProductController::class, 'customerIndex'])->name('customer-products.index');
     Route::get('/product/{id}', [ProductController::class, 'detail'])->name('product.detail');
+
+    // Routes for customer cart
+    Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
 });
 
 require __DIR__.'/auth.php';
