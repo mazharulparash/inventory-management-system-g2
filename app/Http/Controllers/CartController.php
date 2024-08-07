@@ -30,6 +30,13 @@ class CartController extends Controller
         }
 
         if(isset($cart[$id])) {
+            if ($cart[$id]['quantity'] + 1 > $product->quantity) {
+                // If requested quantity exceeds stock, show an error message
+                // Update the cart item quantity
+                $cart[$id]['quantity'] = $product->quantity;
+                session()->put('cart', $cart);
+                return redirect()->route('customer-products.index')->with('error', 'Requested quantity exceeds stock available!');
+            }
             $cart[$id]['quantity']++;
         } else {
             $cart[$id] = [
