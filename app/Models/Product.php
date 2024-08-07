@@ -15,4 +15,16 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    /**
+     * Reduce the stock quantity by the given amount.
+     *
+     * @param int $quantity
+     * @return void
+     */
+    public function reduceStock($quantity)
+    {
+        $this->quantity -= $quantity;
+        $this->save();
+    }
 }

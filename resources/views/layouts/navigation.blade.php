@@ -19,6 +19,10 @@
                         || request()->routeIs('product.detail')">
                         {{ __('Products') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('customer-orders.index')" :active="request()->routeIs('customer-orders.index')
+                        || request()->routeIs('customer-orders.show')">
+                        {{ __('Orders') }}
+                    </x-nav-link>
                 </div>
             </div>
 
