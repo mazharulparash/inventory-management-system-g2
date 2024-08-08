@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Admin\AdminOrderController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,7 +48,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Routes for product management
     Route::resource('admin/products', ProductController::class);
+
+        // Routes for admin orders
+        Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+        Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('orders.show');
     });
+
 
     // Admin Middleware End
 

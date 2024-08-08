@@ -12,7 +12,7 @@ class OrderController extends Controller
     public function index()
     {
         $userId = Auth::id();
-        $orders = Order::where('user_id', $userId)->with('orderItems')->get();
+        $orders = Order::where('user_id', $userId)->with('orderItems')->paginate(10);
         return view('orders.index', compact('orders'));
     }
 
