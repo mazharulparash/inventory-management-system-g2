@@ -28,9 +28,9 @@
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.index')
+                <x-nav-link class="mr-2" :href="route('cart.index')" :active="request()->routeIs('cart.index')
                     || request()->routeIs('cart.index')">
-                    {{ __('Cart') }}
+                    <i class="fas fa-shopping-cart text-xl"></i>
                     @php
                         $cartItemCount = session()->get('cart', []);
                         $totalItems = array_sum(array_column($cartItemCount, 'quantity'));

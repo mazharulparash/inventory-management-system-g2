@@ -52,6 +52,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Routes for admin orders
         Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('orders.index');
         Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('orders.show');
+        Route::patch('/admin/orders/{id}', [AdminOrderController::class, 'update'])->name('orders.update');
     });
 
 
