@@ -21,4 +21,21 @@ class AdminOrderController extends Controller
         $order = Order::where('id', $id)->with('orderItems')->firstOrFail();
         return view('admin.orders.show', compact('order'));
     }
+
+    public function update(Request $request, $id)
+    {
+        // Validate the request data
+        $request->validate([
+            'status' => 'required',
+        ]);
+
+        $order = Order::findOrFail($id);
+
+        // Update the order status
+        $order->status = $request->status;
+        $order->save();
+
+        // Redirect back with a success message
+        return redirect()->route('orders.index')->with('success', 'Order status updated successfully.');
+    }
 }

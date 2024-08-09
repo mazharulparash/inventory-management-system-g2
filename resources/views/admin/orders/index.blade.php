@@ -22,54 +22,98 @@
             @endif
 
             <div class="bg-white shadow sm:rounded-lg">
-                <div class="p-6">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead class="bg-gray-50 dark:bg-gray-800 mb-2">
-                        <tr>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __('Order ID') }}</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __('Total Amount') }}</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __('Status') }}</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __('Date') }}</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __('Actions') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                        @foreach($orders as $order)
+                <div class="p-6 card-body">
+                    <table id="ordersTable" class="table table-bordered table-striped w-full">
+                        <thead>
                             <tr>
-                                <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-100">{{ $order->id }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-100">${{ $order->total_amount }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-100">{{ ucfirst($order->status) }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-100">{{ $order->created_at->format('d/m/Y') }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-100">
-                                    <a href="{{ route('orders.show', $order->id) }}" class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-800">
-                                        {{ __('View Details') }}
-                                    </a>
-                                </td>
+                                <th>Order ID</th>
+                                <th>Created by</th>
+                                <th>Total Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                <div class="mt-6">
-                {{ $orders->links() }}
-                </div>
+                        </thead>
+                        <tbody>
+                            @forelse ($orders as $order)
+                                <tr>
+                                    <td>{{ $order->id }}</td>
+                                    <td>{{ $order->user->name }}</td>
+                                    <td>{{ $order->total_amount }}</td>
+                                    <td>
+                                        <span class="badge 
+                                            @if($order->status == 'pending') bg-warning 
+                                            @elseif($order->status == 'processing') bg-info 
+                                            @elseif($order->status == 'shipped') bg-primary 
+                                            @elseif($order->status == 'delivered') bg-success 
+                                            @else bg-secondary 
+                                            @endif">
+                                            {{ ucfirst($order->status) }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $order->created_at->format('d/m/Y') }}</td>
+                                    <td>
+                                        <a href="{{ route('orders.show', $order->id) }}" class="btn btn-info btn-sm">Details</a>
+                                        <button class="btn btn-warning btn-sm" onclick="openUpdateModal({{ $order->id }}, '{{ $order->status }}')">Update</button>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="text-center">No Orders found.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                    <div class="mt-4">
+                        {{ $orders->links() }} <!-- Laravel pagination links -->
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    @push('scripts')
-        <!-- DataTables & Plugins -->
-        <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
-        <script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-        <script src="{{ asset('plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
-        <script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
-        <script src="{{ asset('plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
-        <script src="{{ asset('plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
-        <script src="{{ asset('plugins/jszip/jszip.min.js') }}"></script>
-        <script src="{{ asset('plugins/pdfmake/pdfmake.min.js') }}"></script>
-        <script src="{{ asset('plugins/pdfmake/vfs_fonts.js') }}"></script>
-        <script src="{{ asset('plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
-        <script src="{{ asset('plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
-        <script src="{{ asset('plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
-    @endpush
+    <!-- Modal -->
+    <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateModalLabel">Update Order Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateStatusForm" method="POST" action="">
+                        @csrf
+                        @method('PATCH')
+                        <div class="form-group">
+                            <label for="status">Order Status</label>
+                            <select name="status" id="status" class="form-control" required>
+                                <option value="pending">Pending</option>
+                                <option value="processing">Processing</option>
+                                <option value="shipped">Shipped</option>
+                                <option value="delivered">Delivered</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Status</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript to handle modal logic -->
+    <script>
+        function openUpdateModal(orderId, currentStatus) {
+            // Set the form action to the correct route
+            const form = document.getElementById('updateStatusForm');
+            form.action = `/admin/orders/${orderId}`;
+
+            // Set the current status in the select dropdown
+            const statusSelect = document.getElementById('status');
+            statusSelect.value = currentStatus;
+
+            // Open the modal
+            const modal = new bootstrap.Modal(document.getElementById('updateModal'));
+            modal.show();
+        }
+    </script>
 </x-app-layout>

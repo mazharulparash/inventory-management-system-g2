@@ -20,7 +20,7 @@ class OrderController extends Controller
     public function show($id)
     {
         $userId = Auth::id();
-        $order = Order::where('id', $id)->where('user_id', $userId)->with('orderItems')->firstOrFail();
+        $order = Order::where('id', $id)->where('user_id', $userId)->with('orderItems', 'user')->firstOrFail();
         return view('orders.show', compact('order'));
     }
 }
