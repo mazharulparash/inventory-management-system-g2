@@ -1,14 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Show Product') }}
+            {{ __('Show Orders') }}
         </h2>
     </x-slot>
 
     <x-slot name="breadcrumb">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="{{ route('orders.index') }}">Products</a></li>
-            <li class="breadcrumb-item active">{{ __('Show Product') }}</li>
+            <li class="breadcrumb-item active">{{ __('Show Order') }}</li>
         </ol>
     </x-slot>
 
