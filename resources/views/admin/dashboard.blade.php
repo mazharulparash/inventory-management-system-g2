@@ -14,10 +14,85 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("You're logged in as Admin!") }}
+                <div class="row">
+                    <!-- Sales Chart -->
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Sales Overview</h3>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="salesChart" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Monthly Sales Trend -->
+                    <div class="col-md-12">
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <h3 class="card-title">Monthly Sales Trend</h3>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="monthlySalesChart" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <!-- Script to generate the charts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sales Overview Chart
+            const salesCtx = document.getElementById('salesChart').getContext('2d');
+            new Chart(salesCtx, {
+                type: 'bar', // Change to 'line', 'pie', etc. if needed
+                data: {
+                    labels: {!! json_encode($salesDataArray['labels']) !!},
+                    datasets: [{
+                        label: 'Sales',
+                        data: {!! json_encode($salesDataArray['data']) !!},
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Monthly Sales Trend Chart
+            const monthlySalesCtx = document.getElementById('monthlySalesChart').getContext('2d');
+            new Chart(monthlySalesCtx, {
+                type: 'line', // Change to 'bar', 'pie', etc. if needed
+                data: {
+                    labels: {!! json_encode($monthlySalesArray['labels']) !!},
+                    datasets: [{
+                        label: 'Monthly Sales',
+                        data: {!! json_encode($monthlySalesArray['data']) !!},
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+    @endpush
 </x-app-layout>

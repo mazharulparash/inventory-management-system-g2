@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\AdminProfileController;
 use App\Http\Controllers\Admin\CategoryController;
@@ -35,9 +36,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Route for the admin dashboard
     Route::middleware('role:admin')->group(function () {
-        Route::get('/admin', function () {
-            return view('admin.dashboard'); // Admin dashboard
-        })->name('admin.dashboard');
+        Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
         // Routes for admin profile management
         Route::get('/admin/profile', [AdminProfileController::class, 'edit'])->name('admin-profile.edit');
