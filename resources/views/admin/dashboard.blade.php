@@ -52,7 +52,7 @@
                 data: {
                     labels: {!! json_encode($salesDataArray['labels']) !!},
                     datasets: [{
-                        label: 'Sales',
+                        label: 'Sales (USD)',
                         data: {!! json_encode($salesDataArray['data']) !!},
                         backgroundColor: 'rgba(54, 162, 235, 0.2)',
                         borderColor: 'rgba(54, 162, 235, 1)',
