@@ -13,29 +13,27 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="row">
-                    <!-- Sales Chart -->
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">Sales Overview</h3>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="salesChart" width="400" height="200"></canvas>
-                            </div>
+            <div class="row">
+                <!-- Sales Chart -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Sales Overview</h3>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="salesChart" width="400" height="200"></canvas>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Monthly Sales Trend -->
-                    <div class="col-md-12">
-                        <div class="card mt-4">
-                            <div class="card-header">
-                                <h3 class="card-title">Monthly Sales Trend</h3>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="monthlySalesChart" width="400" height="200"></canvas>
-                            </div>
+                <!-- Monthly Sales Trend -->
+                <div class="col-md-6">
+                    <div class="card mt-4 mt-md-0">
+                        <div class="card-header">
+                            <h3 class="card-title">Monthly Sales Trend</h3>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="monthlySalesChart" width="400" height="200"></canvas>
                         </div>
                     </div>
                 </div>
@@ -54,7 +52,7 @@
                 data: {
                     labels: {!! json_encode($salesDataArray['labels']) !!},
                     datasets: [{
-                        label: 'Sales',
+                        label: 'Sales (USD)',
                         data: {!! json_encode($salesDataArray['data']) !!},
                         backgroundColor: 'rgba(54, 162, 235, 0.2)',
                         borderColor: 'rgba(54, 162, 235, 1)',
@@ -77,7 +75,7 @@
                 data: {
                     labels: {!! json_encode($monthlySalesArray['labels']) !!},
                     datasets: [{
-                        label: 'Monthly Sales',
+                        label: 'Total Quantity Sold',
                         data: {!! json_encode($monthlySalesArray['data']) !!},
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
                         borderColor: 'rgba(75, 192, 192, 1)',
