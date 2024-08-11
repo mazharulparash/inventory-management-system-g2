@@ -11,13 +11,6 @@
         </ol>
     </x-slot>
 
-    @push('styles')
-        <!-- DataTables CSS files -->
-        <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
-    @endpush
-
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="mb-4">
@@ -34,7 +27,7 @@
 
             <div class="bg-white shadow sm:rounded-lg">
                 <div class="p-6 card-body">
-                    <table id="categoriesTable" class="table table-bordered table-hover">
+                    <table id="categoriesTable" class="table table-bordered table-striped w-full">
                         <thead>
                             <tr>
                                 <th>Serial No</th>
@@ -71,19 +64,4 @@
             </div>
         </div>
     </div>
-    @push('scripts')
-        <!-- DataTables & Plugins -->
-        <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
-        <script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-        <script src="{{ asset('plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
-        <script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
-        <script src="{{ asset('plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
-        <script src="{{ asset('plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
-        <script src="{{ asset('plugins/jszip/jszip.min.js') }}"></script>
-        <script src="{{ asset('plugins/pdfmake/pdfmake.min.js') }}"></script>
-        <script src="{{ asset('plugins/pdfmake/vfs_fonts.js') }}"></script>
-        <script src="{{ asset('plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
-        <script src="{{ asset('plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
-        <script src="{{ asset('plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
-    @endpush
 </x-app-layout>

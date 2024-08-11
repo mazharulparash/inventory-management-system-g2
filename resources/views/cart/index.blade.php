@@ -10,6 +10,15 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     @if(!empty($cart))
+                        <!-- Clear Cart Button -->
+                        <div class="float-right">
+                            <form action="{{ route('cart.clear') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-800">
+                                    {{ __('Clear Cart') }}
+                                </button>
+                            </form>
+                        </div>
                         <table class="table-auto w-full">
                             <thead>
                                 <tr>
@@ -47,7 +56,7 @@
                             </tbody>
                         </table>
 
-                        <!-- Display Total Amount -->
+                        <!-- Display Total Amount and Proceed to Checkout Button -->
                         <div class="mt-4 flex justify-between items-center">
                             <div class="text-lg font-semibold">
                                 {{ __('Total Amount: $') . number_format(array_sum(array_map(function ($item) {
@@ -55,13 +64,12 @@
                                 }, $cart)), 2) }}
                             </div>
 
-                            <!-- Clear Cart Button -->
-                            <form action="{{ route('cart.clear') }}" method="POST">
-                                @csrf
-                                <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-800">
-                                    {{ __('Clear Cart') }}
-                                </button>
-                            </form>
+                            <!-- Proceed to Checkout Button -->
+                            <a href="{{ route('checkout.index') }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800">
+                                {{ __('Proceed to Checkout') }}
+                            </a>
+
+                            
                         </div>
                     @else
                         <div class="text-center">
