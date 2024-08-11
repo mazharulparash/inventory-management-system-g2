@@ -8,6 +8,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\AdminOrderController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,21 +39,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
             return view('admin.dashboard'); // Admin dashboard
         })->name('admin.dashboard');
 
-    // Routes for admin profile management
-    Route::get('/admin/profile', [AdminProfileController::class, 'edit'])->name('admin-profile.edit');
-    Route::patch('/admin/profile', [AdminProfileController::class, 'update'])->name('admin-profile.update');
-    Route::delete('/admin/profile', [AdminProfileController::class, 'destroy'])->name('admin-profile.destroy');
+        // Routes for admin profile management
+        Route::get('/admin/profile', [AdminProfileController::class, 'edit'])->name('admin-profile.edit');
+        Route::patch('/admin/profile', [AdminProfileController::class, 'update'])->name('admin-profile.update');
+        Route::delete('/admin/profile', [AdminProfileController::class, 'destroy'])->name('admin-profile.destroy');
 
-    // Routes for category management
-    Route::resource('admin/categories', CategoryController::class);
+        // Routes for category management
+        Route::resource('admin/categories', CategoryController::class);
 
-    // Routes for product management
-    Route::resource('admin/products', ProductController::class);
+        // Routes for product management
+        Route::resource('admin/products', ProductController::class);
 
         // Routes for admin orders
         Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('orders.index');
         Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('orders.show');
         Route::patch('/admin/orders/{id}', [AdminOrderController::class, 'update'])->name('orders.update');
+
+        // Routes for admin reports
+        Route::get('/admin/report-sales', [ReportController::class, 'sales'])->name('report-sales.index');
+        Route::post('/admin/report-sales/download', [ReportController::class, 'downloadSalesReport'])->name('report-sales.download');
+        Route::get('/admin/report-product-sales', [ReportController::class, 'productSales'])->name('report-product-sales.index');
+        Route::post('/admin/report-product-sales/download', [ReportController::class, 'downloadProductSalesReport'])->name('report-product-sales.download');
+
     });
 
 
