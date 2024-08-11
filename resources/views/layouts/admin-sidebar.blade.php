@@ -34,6 +34,29 @@
                         <p>Orders</p>
                     </a>
                 </li>
+                <li class="nav-item {{ request()->routeIs('report-sales.index', 'report-sales.download', 'report-product-sales.index', 'report-product-sales.download') ? 'menu-open' : '' }}">
+                  <a href="#" class="nav-link {{ request()->routeIs('report-sales.index', 'report-product-sales.index') ? 'active' : '' }}">
+                      <i class="nav-icon fas fa-chart-pie"></i>
+                      <p>
+                          Reports
+                          <i class="right fas fa-angle-left"></i>
+                      </p>
+                  </a>
+                  <ul class="nav nav-treeview">
+                      <li class="nav-item">
+                          <a href="{{ route('report-sales.index') }}" class="nav-link {{ request()->routeIs('report-sales.index', 'report-sales.download') ? 'active' : '' }}">
+                              <i class="far fa-circle nav-icon"></i>
+                              <p>Sales</p>
+                          </a>
+                      </li>
+                      <li class="nav-item">
+                          <a href="{{ route('report-product-sales.index') }}" class="nav-link {{ request()->routeIs('report-product-sales.index', 'report-product-sales.download') ? 'active' : '' }}">
+                              <i class="far fa-circle nav-icon"></i>
+                              <p>Sales by Product</p>
+                          </a>
+                      </li>
+                  </ul>
+              </li>
             </ul>
         </nav>
         <!-- /.sidebar-menu -->
