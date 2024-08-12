@@ -32,6 +32,7 @@
                             <label for="status">Order Status</label>
                             <select name="status" id="status" class="form-control">
                                 <option value="">All</option>
+                                <option value="completed">Completed</option>
                                 <option value="pending">Pending</option>
                                 <option value="processing">Processing</option>
                                 <option value="shipped">Shipped</option>

@@ -16,12 +16,6 @@
 
                     <h4 class="mt-4 text-lg">{{ __('Order Details') }}</h4>
                     <table class="table-auto w-full mt-4">
-                        <thead>
-                            <tr>
-                                <th class="px-4 py-2">{{ __('Name') }}</th>
-                                <th class="px-4 py-2">{{ __('Value') }}</th>
-                            </tr>
-                        </thead>
                         <tbody>
                             <tr>
                                 <td class="border px-4 py-2">{{ __('Name') }}</td>
