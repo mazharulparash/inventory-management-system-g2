@@ -113,22 +113,4 @@ class ProductController extends Controller
 
         return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
     }
-
-    /**
-     * Display a listing of the Customer resource.
-     */
-    public function customerIndex()
-    {
-        $products = Product::paginate(10);
-        return view('products.index', compact('products'));
-    }
-
-    /**
-     * Display the specified product.
-     */
-    public function detail($id)
-    {
-        $product = Product::findOrFail($id);
-        return view('products.show', compact('product'));
-    }
 }

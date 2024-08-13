@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Http\Controllers\Controller;
 use PDF;
 use Illuminate\Http\Request;
 

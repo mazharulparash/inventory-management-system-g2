@@ -9,7 +9,8 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\AdminOrderController;
-use App\Http\Controllers\ReportController;
+use App\Http\Controllers\CustomerProductController;
+use App\Http\Controllers\Admin\ReportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -71,8 +72,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Routes for customer products
-    Route::get('/products', [ProductController::class, 'customerIndex'])->name('customer-products.index');
-    Route::get('/product/{id}', [ProductController::class, 'detail'])->name('product.detail');
+    Route::get('/products', [CustomerProductController::class, 'index'])->name('customer-products.index');
+    Route::get('/product/{id}', [CustomerProductController::class, 'show'])->name('customer-product.show');
 
     // Routes for customer cart
     Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
@@ -89,6 +90,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Routes for customer orders
     Route::get('/orders', [OrderController::class, 'index'])->name('customer-orders.index');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('customer-orders.show');
+    Route::get('/orders/{id}/download', [OrderController::class, 'download'])->name('customer-orders.download');
 
 
 });
