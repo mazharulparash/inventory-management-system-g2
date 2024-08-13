@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\CustomerProductController;
 use App\Http\Controllers\Admin\ReportController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\AdminUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,7 +61,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/admin/report-sales/download', [ReportController::class, 'downloadSalesReport'])->name('report-sales.download');
         Route::get('/admin/report-product-sales', [ReportController::class, 'productSales'])->name('report-product-sales.index');
         Route::post('/admin/report-product-sales/download', [ReportController::class, 'downloadProductSalesReport'])->name('report-product-sales.download');
-
+        // Routes for user management
+        Route::resource('admin/users', AdminUserController::class);
     });
 
 
