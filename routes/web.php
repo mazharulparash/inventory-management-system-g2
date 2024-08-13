@@ -34,6 +34,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/customer', function () {
         return view('dashboard'); // Customer dashboard
     })->name('dashboard');
+    Route::get('/customer/about', function () {
+        return view('about'); // Customer dashboard
+    })->name('about');
 
     // Route for the admin dashboard
     Route::middleware('role:admin')->group(function () {
