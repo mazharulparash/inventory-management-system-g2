@@ -23,6 +23,28 @@
 
             <div class="bg-white shadow sm:rounded-lg">
                 <div class="p-6 card-body">
+
+                    <!-- Status Filter Form -->
+                    <form action="{{ route('orders.index') }}" method="GET" class="mb-4">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <select id="statusFilter" name="status" class="form-control">
+                                        <option value="">{{ __('All Status') }}</option>
+                                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>{{ __('Completed') }}</option>
+                                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>{{ __('Pending') }}</option>
+                                        <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>{{ __('Processing') }}</option>
+                                        <option value="shipped" {{ request('status') == 'shipped' ? 'selected' : '' }}>{{ __('Shipped') }}</option>
+                                        <option value="delivered" {{ request('status') == 'delivered' ? 'selected' : '' }}>{{ __('Delivered') }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary">{{ __('Filter') }}</button>
+                            </div>
+                        </div>
+                    </form>
+
                     <table id="ordersTable" class="table table-bordered table-striped w-full">
                         <thead>
                             <tr>
@@ -42,8 +64,8 @@
                                     <td>{{ $order->total_amount }}</td>
                                     <td>
                                         <span class="badge 
-                                            @if($order->status == 'pending') bg-warning 
-                                            @elseif($order->status == 'processing') bg-info 
+                                            @if($order->status == 'processing') bg-warning 
+                                            @elseif($order->status == 'completed') bg-info 
                                             @elseif($order->status == 'shipped') bg-primary 
                                             @elseif($order->status == 'delivered') bg-success 
                                             @else bg-secondary 
@@ -59,7 +81,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="text-center">No Orders found.</td>
+                                    <td colspan="6" class="text-center">No Orders found.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -87,6 +109,7 @@
                         <div class="form-group">
                             <label for="status">Order Status</label>
                             <select name="status" id="status" class="form-control" required>
+                                <option value="completed">Completed</option>
                                 <option value="pending">Pending</option>
                                 <option value="processing">Processing</option>
                                 <option value="shipped">Shipped</option>

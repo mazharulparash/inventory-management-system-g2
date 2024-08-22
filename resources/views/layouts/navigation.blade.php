@@ -16,7 +16,7 @@
                         {{ __('Home') }}
                     </x-nav-link>
                     <x-nav-link :href="route('customer-products.index')" :active="request()->routeIs('customer-products.index')
-                        || request()->routeIs('product.detail')">
+                        || request()->routeIs('customer-product.show')">
                         {{ __('Products') }}
                     </x-nav-link>
                     <x-nav-link :href="route('customer-orders.index')" :active="request()->routeIs('customer-orders.index')

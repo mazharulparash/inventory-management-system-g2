@@ -9,9 +9,20 @@ use Illuminate\Http\Request;
 class AdminOrderController extends Controller
 {
     // Display a list of orders for the authenticated user
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with('orderItems')->paginate(10);
+        // Retrieve the selected status from the request
+        $status = $request->input('status');
+
+        // Fetch orders, optionally filtering by status
+        $ordersQuery = Order::query();
+
+        if ($status) {
+            $ordersQuery->where('status', $status);
+        }
+
+        // Paginate the results
+        $orders = $ordersQuery->paginate(10);
         return view('admin.orders.index', compact('orders'));
     }
 

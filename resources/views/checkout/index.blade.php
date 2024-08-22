@@ -48,7 +48,7 @@
 
                         <div class="mt-4">
                             <h3 class="text-lg">{{ __('Shipping Information') }}</h3>
-                            <form action="{{ route('checkout.store') }}" method="POST" class="mt-4">
+                            <form id="payment-form" action="{{ route('checkout.store') }}" method="POST" class="mt-4">
                                 @csrf
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
@@ -80,6 +80,14 @@
                                         <input type="text" name="phone" id="phone" class="w-full border rounded px-2 py-1" required>
                                     </div>
                                 </div>
+
+                                <!-- Payment Element -->
+                                <div class="mt-4">
+                                    <label for="card-element" class="block text-sm">{{ __('Credit or Debit Card') }}</label>
+                                    <div id="card-element" class="border rounded px-2 py-1"></div>
+                                    <div id="card-errors" role="alert" class="text-red-500 mt-2"></div>
+                                </div>
+
                                 <button type="submit" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800">
                                     {{ __('Place Order') }}
                                 </button>
@@ -95,4 +103,40 @@
             </div>
         </div>
     </div>
+
+    <!-- Include Stripe.js -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var stripe = Stripe('{{ config('services.stripe.key') }}'); // Use the public key from config
+            var elements = stripe.elements();
+            var cardElement = elements.create('card');
+            cardElement.mount('#card-element');
+
+            var form = document.getElementById('payment-form');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                stripe.createPaymentMethod({
+                    type: 'card',
+                    card: cardElement,
+                }).then(function(result) {
+                    if (result.error) {
+                        // Display error in the card element
+                        var cardErrors = document.getElementById('card-errors');
+                        cardErrors.textContent = result.error.message;
+                    } else {
+                        // Append the payment method ID to the form and submit
+                        var paymentMethodInput = document.createElement('input');
+                        paymentMethodInput.setAttribute('type', 'hidden');
+                        paymentMethodInput.setAttribute('name', 'payment_method_id');
+                        paymentMethodInput.setAttribute('value', result.paymentMethod.id);
+                        form.appendChild(paymentMethodInput);
+
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
 </x-customer-layout>
