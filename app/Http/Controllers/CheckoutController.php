@@ -3,18 +3,31 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Models\OrderItem;
-use App\Models\Product;
+use App\Services\CartService;
+use App\Services\OrderService;
+use App\Services\PaymentService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Stripe\Stripe;
-use Stripe\PaymentIntent;
+use Stripe\Exception\ApiErrorException;
 
 class CheckoutController extends Controller
 {
+    protected $paymentService;
+    protected $orderService;
+    protected $cartService;
+
+    public function __construct(
+        PaymentService $paymentService,
+        OrderService $orderService,
+        CartService $cartService
+    ) {
+        $this->paymentService = $paymentService;
+        $this->orderService = $orderService;
+        $this->cartService = $cartService;
+    }
+
     public function index()
     {
-        $cart = session()->get('cart', []);
+        $cart = $this->cartService->getCart();
         return view('checkout.index', compact('cart'));
     }
 
@@ -32,27 +45,15 @@ class CheckoutController extends Controller
             'payment_method_id' => 'required|string',
         ]);
 
-        // Calculate the total amount
-        $cart = session()->get('cart', []);
-        $totalAmount = array_sum(array_map(function ($item) {
-            return $item['price'] * $item['quantity'];
-        }, $cart));
-
-        // Set your Stripe secret key
-        Stripe::setApiKey(config('services.stripe.secret'));
+        // Get cart and calculate total amount
+        $cart = $this->cartService->getCart();
+        $totalAmount = $this->cartService->calculateTotalAmount($cart);
 
         $paymentMethodId = $request->input('payment_method_id');
 
         try {
             // Create a PaymentIntent
-            $paymentIntent = PaymentIntent::create([
-                'amount' => $totalAmount * 100, // Amount in cents
-                'currency' => 'usd',
-                'payment_method' => $paymentMethodId,
-                'confirmation_method' => 'manual',
-                'confirm' => true,
-                'return_url' => route('checkout.confirmation', ['order' => 'PLACEHOLDER']), // Placeholder
-            ]);
+            $paymentIntent = $this->paymentService->createPaymentIntent($totalAmount, $paymentMethodId);
 
             // Handle the response
             if ($paymentIntent->status === 'requires_action' || $paymentIntent->status === 'requires_source_action') {
@@ -60,42 +61,18 @@ class CheckoutController extends Controller
                 return redirect()->away($paymentIntent->next_action->redirect_to_url->url);
             } elseif ($paymentIntent->status === 'succeeded') {
                 // Create the order if the payment is successful
-                $order = Order::create([
-                    'user_id' => Auth::id(),
-                    'name' => $request->input('name'),
-                    'address' => $request->input('address'),
-                    'city' => $request->input('city'),
-                    'postal_code' => $request->input('postal_code'),
-                    'country' => $request->input('country'),
-                    'email' => $request->input('email'),
-                    'phone' => $request->input('phone'),
-                    'total_amount' => $totalAmount,
-                    'status' => 'completed',
-                ]);
+                $orderData = $request->only(['name', 'address', 'city', 'postal_code', 'country', 'email', 'phone']);
+                $orderData['totalAmount'] = $totalAmount;
+                $order = $this->orderService->createOrder($orderData, $cart);
 
-                foreach ($cart as $id => $details) {
-                    OrderItem::create([
-                        'order_id' => $order->id,
-                        'product_id' => $id,
-                        'name' => $details['name'],
-                        'price' => $details['price'],
-                        'quantity' => $details['quantity'],
-                    ]);
-
-                    $product = Product::find($id);
-                    if ($product) {
-                        $product->reduceStock($details['quantity']);
-                    }
-                }
-
-                session()->forget('cart');
+                $this->cartService->clearCart();
 
                 return redirect()->route('checkout.confirmation', ['order' => $order->id])
                     ->with('success', 'Order placed successfully!');
             } else {
                 return redirect()->back()->with('error', 'Payment failed.');
             }
-        } catch (\Exception $e) {
+        } catch (ApiErrorException $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
     }

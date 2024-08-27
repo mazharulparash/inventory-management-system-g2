@@ -2,17 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use App\Services\CartService;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
+    protected $cartService;
+
+    public function __construct(CartService $cartService)
+    {
+        $this->cartService = $cartService;
+    }
+
     /**
      * Display the cart items.
      */
     public function index()
     {
-        $cart = session()->get('cart', []);
+        $cart = $this->cartService->getCart();
         return view('cart.index', compact('cart'));
     }
 
@@ -21,34 +28,12 @@ class CartController extends Controller
      */
     public function add(Request $request, $id)
     {
-        $product = Product::findOrFail($id);
-        $cart = session()->get('cart', []);
-
-        // Check if product is out of stock
-        if ($product->quantity == 0) {
-            return redirect()->route('customer-products.index')->with('error', 'Product is out of stock!');
+        try {
+            $this->cartService->addToCart($id);
+            return redirect()->route('cart.index')->with('success', 'Product added to cart!');
+        } catch (\Exception $e) {
+            return redirect()->route('customer-products.index')->with('error', $e->getMessage());
         }
-
-        if(isset($cart[$id])) {
-            if ($cart[$id]['quantity'] + 1 > $product->quantity) {
-                // If requested quantity exceeds stock, show an error message
-                // Update the cart item quantity
-                $cart[$id]['quantity'] = $product->quantity;
-                session()->put('cart', $cart);
-                return redirect()->route('customer-products.index')->with('error', 'Requested quantity exceeds stock available!');
-            }
-            $cart[$id]['quantity']++;
-        } else {
-            $cart[$id] = [
-                "name" => $product->name,
-                "quantity" => 1,
-                "price" => $product->price,
-                "image" => $product->image
-            ];
-        }
-
-        session()->put('cart', $cart);
-        return redirect()->route('cart.index')->with('success', 'Product added to cart!');
     }
 
     /**
@@ -56,13 +41,7 @@ class CartController extends Controller
      */
     public function remove(Request $request, $id)
     {
-        $cart = session()->get('cart', []);
-
-        if(isset($cart[$id])) {
-            unset($cart[$id]);
-            session()->put('cart', $cart);
-        }
-
+        $this->cartService->removeFromCart($id);
         return redirect()->route('cart.index')->with('success', 'Product removed from cart!');
     }
 
@@ -71,32 +50,14 @@ class CartController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $cart = session()->get('cart', []);
         $quantity = $request->input('quantity');
 
-        // Check if product exists in the cart
-        if(isset($cart[$id])) {
-            $product = Product::findOrFail($id);
-
-            // Check if the updated quantity is available in stock
-            if ($quantity == 0) {
-                return redirect()->route('cart.index')->with('error', 'Product out of stock!');
-            } elseif ($quantity > $product->quantity) {
-                // If requested quantity exceeds stock, show an error message
-                // Update the cart item quantity
-                $cart[$id]['quantity'] = $product->quantity;
-                session()->put('cart', $cart);
-                return redirect()->route('cart.index')->with('error', 'Requested quantity exceeds stock available!');
-            } else {
-                // Update the cart item quantity
-                $cart[$id]['quantity'] = $quantity;
-                session()->put('cart', $cart);
-                return redirect()->route('cart.index')->with('success', 'Cart updated!');
-            }
+        try {
+            $this->cartService->updateCartItem($id, $quantity);
+            return redirect()->route('cart.index')->with('success', 'Cart updated!');
+        } catch (\Exception $e) {
+            return redirect()->route('cart.index')->with('error', $e->getMessage());
         }
-
-        // If item not found in cart, handle appropriately
-        return redirect()->route('cart.index')->with('error', 'Product not found in cart!');
     }
 
     /**
@@ -104,8 +65,7 @@ class CartController extends Controller
      */
     public function getCartItemCount()
     {
-        $cart = session()->get('cart', []);
-        return array_sum(array_column($cart, 'quantity'));
+        return $this->cartService->getCartItemCount();
     }
 
     /**
@@ -113,7 +73,7 @@ class CartController extends Controller
      */
     public function clear()
     {
-        session()->forget('cart');
+        $this->cartService->clearCart();
         return redirect()->route('cart.index')->with('success', 'Cart has been cleared!');
     }
 
